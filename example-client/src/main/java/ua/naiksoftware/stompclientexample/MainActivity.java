@@ -26,8 +26,6 @@ import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
-import static ua.naiksoftware.stompclientexample.RestClient.ANDROID_EMULATOR_LOCALHOST;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -56,8 +54,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectStomp(View view) {
-        mStompClient = Stomp.over(WebSocket.class, "ws://" + ANDROID_EMULATOR_LOCALHOST
-                + ":" + RestClient.SERVER_PORT + "/example-endpoint/websocket");
+//        mStompClient = Stomp.over(WebSocket.class, "ws://" + ANDROID_EMULATOR_LOCALHOST
+//                + ":" + RestClient.SERVER_PORT + "/example-endpoint/websocket");
+
+        mStompClient = Stomp.over(WebSocket.class, "ws://192.168.0.128/any-socket/websocket");
+        mStompClient.connect();
 
         mStompClient.lifecycle()
                 .subscribeOn(Schedulers.io())
@@ -77,19 +78,18 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         // Receive greetings
-        mStompClient.topic("/topic/greetings")
+        mStompClient.topic("/topic/notice")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(topicMessage -> {
-                    Log.d(TAG, "Received " + topicMessage.getPayload());
-                    addItem(mGson.fromJson(topicMessage.getPayload(), EchoModel.class));
+                    Log.d(TAG, "Received " + topicMessage.toString());
+                    // Log.d(TAG, "Received " + topicMessage.getPayload());
+                    // addItem(mGson.fromJson(topicMessage.getPayload(), EchoModel.class));
                 });
-
-        mStompClient.connect();
     }
 
     public void sendEchoViaStomp(View v) {
-        mStompClient.send("/topic/hello-msg-mapping", "Echo STOMP " + mTimeFormat.format(new Date()))
+        mStompClient.send("/all", "Echo Android STOMP " + mTimeFormat.format(new Date()))
                 .compose(applySchedulers())
                 .subscribe(aVoid -> {
                     Log.d(TAG, "STOMP echo send successfully");
