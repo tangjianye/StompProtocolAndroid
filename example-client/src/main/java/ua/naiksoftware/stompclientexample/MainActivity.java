@@ -26,6 +26,8 @@ import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
+import static ua.naiksoftware.stompclientexample.RestClient.ANDROID_EMULATOR_LOCALHOST;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -54,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connectStomp(View view) {
-//        mStompClient = Stomp.over(WebSocket.class, "ws://" + ANDROID_EMULATOR_LOCALHOST
-//                + ":" + RestClient.SERVER_PORT + "/example-endpoint/websocket");
+        mStompClient = Stomp.over(WebSocket.class, "ws://" + ANDROID_EMULATOR_LOCALHOST
+                + ":" + RestClient.SERVER_PORT + "/any-socket/websocket");
 
-        mStompClient = Stomp.over(WebSocket.class, "ws://192.168.0.128/any-socket/websocket");
+//        mStompClient = Stomp.over(WebSocket.class, "ws://192.168.0.128/any-socket/websocket");
         mStompClient.connect();
 
         mStompClient.lifecycle()
